@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load task_tags %}
+
+
+
+{% block title %} {{task_detail.title}} {% endblock title %}
+
+
+
+
+{% block content %}
+    
+<div class="ui segment centered ">
+    <p class="ui big header centered"> Задача: «{{ task_detail.title }}»	</p>
+</div>
+
+<div class="ui basic ">
+    {% if not task_detail.text %}
+    <br>
+    
+     <center><p> Дополнительных примечаний к задаче нет </p></center>
+     <br>
+    {% else %}
+    <center>
+    <p>{{task_detail.text}}</p>
+  </div>
+  </center>
+    {% endif %}
+   <center></center>
+   
+
+
+
+<div>
+    
+    {% if not task_detail.image %}
+    <center>
+        <p>Вы можете добавить изображение для своих заметок</p>
+    </center>
+    {% else %}
+
+    <div class="fotorama">
+         <img class="ui centered image big" src="{{task_detail.image.url}}"> 
+    </div>
+        
+   
+{% endif %}
+
+
+
+
+
+<br>
+<br>
+<br>
+<center>
+{% with  total_likes=task_detail.users_like.count users_like=task_detail.users_like.all  %}
+
+
+{% for comment in comments %}
+
+<div class="ui comments">
+    
+    <div class="comment">
+
+      
+      
+        
+      
+        {% if comment.user.profile.photo %}
+        <a class="avatar">
+        <img src="{{ comment.user.profile.photo.url }}">
+        {% endif %}
+      </a>
+      
+      <div class="content">
+        <a href="{{user.get_absolute_url}}" class="author"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> {{comment.user}} </font></font></a>
+        <div class="metadata">
+          <div class="date"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{comment.created}}</font></font></div>
+        </div>
+        <div class="text">
+          <p><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> {{comment.text}} </font></font></p>
+       
+        </div>
+     
+      
+    </div>
+    </div>
+</div>
+
+
+{% endfor %}
+
+</center>
+
+
+<a href="{% url "task_like" task_detail.id task_detail.slug %}">
+<div class="ui labeled button" tabindex="0">
+  <div class="ui red button">
+    <i class="heart icon"></i> 
+  {% if request.user not in users_like %}
+    Like
+  {% else %}
+    Unlike
+  {% endif %}
+
+  </div>
+</a>
+
+  <a class="ui basic red left pointing label">
+    {{total_likes}}
+  </a>
+</div>
+{% include 'task/includes/comment_form.html' %}
+  
+{% endwith %}
+
+{% endblock content %}
+    

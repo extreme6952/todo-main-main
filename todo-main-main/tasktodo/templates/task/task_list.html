@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+
+
+{% block title %}
+    Главная страница
+{% endblock title %}
+    
+
+
+
+{% block content %}
+    
+<div style="margin-top: 50px;" class="ui container">
+    <h1 class="ui center aligned header">Мой менеджер задач</h1>
+    <h3 class="test_style">Управляй своим временем!</h3>
+    <form class="ui form" action="{% url "index" %}" method="post" enctype="multipart/form-data">
+        
+        <div class="field">
+            <label>Новая задача</label>
+            {{form.as_p}}
+        </p>
+        </div>
+        <button class="ui teal basic button" type="submit">Добавить</button>
+        {% csrf_token %}
+    </form>
+
+{% for task in task %}
+
+<div class="ui segment">
+    <a href="{{ task.get_absolute_url }}"> <p class="ui big header">№{{task.count}} {{ task.title }}</p></a>
+
+    {% if task.is_complete == False %}
+    <span class="ui gray label">Не завершено</span>
+    <a class="ui primary basic button" href="{% url "update" task_id=task.id slug=task.slug %}">Закрыть</a>
+    {% else %}
+    <span class="ui green label">Завершено</span>
+    <a class="ui blue button" href="{% url "update" task_id=task.id slug=task.slug %}">Открыть</a>
+    {% endif %}
+
+    <a class="ui negative basic button" href="{% url "delete_suka" task_id=task.id slug=task.slug %}">Удалить</a>
+</div>
+
+
+{% endfor %}
+</div>
+
+{% endblock content %}
+    

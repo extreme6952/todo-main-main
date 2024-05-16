@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load thumbnail %}
+
+{% block content %}
+  
+  {% for user in users %}
+
+    
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
+
+<div class="ui link cards">
+    
+  <div class="card">
+    
+    {% if user.profile.photo %} 
+    <div class="image">
+        <img src="{% thumbnail user.profile.photo 290x290 %}"> 
+    </div>
+  
+
+    {% else %}
+    <div class="image">
+      <img src="{% static 'user_image/not_pr.png'  %}" alt=""> 
+    </div>
+  
+    {% endif %}
+
+    <div class="content">
+      <div class="header"> <center>{{user.get_full_name}} </center></div>
+      <br>
+      <center>
+      <div class="meta">
+        <a href="{{user.get_absolute_url}}" class="ui blue button">View Profile</a>
+      </div>
+      </center>
+      <div class="description">
+        
+      </div>
+    </div>
+    <div class="extra content">
+      <span class="right floated">
+        
+      </span>
+      <span>
+        <i class="user icon"></i>
+        
+      </span>
+
+
+    </div>
+
+  </div>
+
+  {% endfor %}   
+{% endblock content %}
