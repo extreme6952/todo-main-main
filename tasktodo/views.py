@@ -18,6 +18,15 @@ from django.contrib.auth.models import User
 
 from actions.models import *
 
+from django.core.cache import cache
+
+import redis
+
+from django.conf import settings
+
+redis = redis.Redis(host=settings.REDIS_HOST,
+                    port=settings.REDIS_PORT,
+                    db=settings.REDIS_DB)
 
 @login_required
 def task_list(request):
@@ -71,7 +80,6 @@ def task_detail(request,task_id,slug):
     form = CommentForm()
     
     comments = task.comments.filter(active=True)
-    
     
     
     

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from telnetlib import AUTHENTICATION
 
@@ -45,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'user_visit.middleware.UserVisitMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'taskmanager.urls'
@@ -75,6 +79,14 @@ TEMPLATES = [
         },
     },
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR,'cache_coolsite'),  
+        
+    }
+}
 
 WSGI_APPLICATION = 'taskmanager.wsgi.application'
 
@@ -163,3 +175,11 @@ ABSOLUTE_URL_OVERRIDES = {
     'auth.user' : lambda u:reverse_lazy('user_detail',
                                         args=[u.username])
 }
+
+REDIS_PORT = 6379
+
+REDIS_HOST = 'localhost'
+
+REDIS_DB = 0
+
+INTERNAL_IPS = ["127.0.0.1"]  # <-- Updated!
