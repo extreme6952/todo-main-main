@@ -56,7 +56,6 @@
 <center>
 {% with  total_likes=task_detail.users_like.count users_like=task_detail.users_like.all  %}
 
-
 {% for comment in comments %}
 
 <div class="ui comments">
@@ -74,7 +73,7 @@
       </a>
       
       <div class="content">
-        <a href="{{user.get_absolute_url}}" class="author"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> {{comment.user}} </font></font></a>
+        <a href="{{comment.user.get_absolute_url}}" class="author"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"> {{comment.user}} </font></font></a>
         <div class="metadata">
           <div class="date"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">{{comment.created}}</font></font></div>
         </div>

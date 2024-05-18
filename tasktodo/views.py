@@ -24,14 +24,33 @@ import redis
 
 from django.conf import settings
 
-redis = redis.Redis(host=settings.REDIS_HOST,
+from .signals import *
+
+
+
+
+r = redis.Redis(host=settings.REDIS_HOST,
                     port=settings.REDIS_PORT,
                     db=settings.REDIS_DB)
+
+
+
 
 @login_required
 def task_list(request):
 
-    task = Task.objects.all()
+    task = cache.get('all_task')
+
+    if not task:
+
+        task = Task.objects.all()
+
+        cache_delete_list(sender=Task,instance=task)
+
+        cache.set('all_task',task,timeout=1800)
+
+        
+
 
     if request.method=='POST':
 
@@ -63,70 +82,79 @@ def task_list(request):
 
         form = NewTaskForm(files=request.FILES,
                            data=request.GET)
-        
+    
 
     return render(request,
                   'task/task_list.html',
                   {'task':task,
                    'form':form})
 
+
+
+
+
+
+
 @login_required
 def task_detail(request,task_id,slug):
 
+
     task = get_object_or_404(Task,
-                             id=task_id,
-                             slug=slug)
+                                 id=task_id,
+                                 slug=slug)
+
+        
+
     
+    total_views = r.incr(f"{task.id} views")
+
+
     form = CommentForm()
     
-    comments = task.comments.filter(active=True)
+    comments = task.comments.filter(active=True).select_related('user__profile')
     
-    
-    
-
     
     return render(request,
                   'task/task_detail.html',
                   {'task_detail':task,
                    'comments':comments,
-                   'form':form})
+                   'form':form,
+                   'total_views':total_views, })
+
+
+
 
 def update_task(request,slug,task_id):
+        
+    
 
     task = get_object_or_404(Task,
-                             slug=slug,
-                             id=task_id)
-    
-    task.is_complete = not task.is_complete
+                                        slug=slug,
+                                        id=task_id)
+        
+    task.is_complete = not task.is_complete    
 
     task.save()
 
+    
+
     return redirect('index')
-
-
-def delete_task(request,id,slug):
-
-    task = get_object_or_404(Task,slug=slug,
-                             id=id)
-    task.delete()
 
 
 
 def delete_task(request,task_id,slug):
 
-    task = get_object_or_404(Task,slug=slug,
-                             id=task_id)
+    task = get_object_or_404(Task,
+                                        slug=slug,
+                                        id=task_id)    
+        
     task.delete()
-
     
-
     return redirect('index')
 
 
 
 
-
-# comment task in contenttype
 @login_required
 @require_POST
 def add_comment(request,slug,id):   
@@ -165,11 +193,6 @@ def add_comment(request,slug,id):
                   {'task':task,
                    'comment':comment,
                    'form':form})
-
-
-             
-
-
 
 
 
@@ -230,7 +253,7 @@ def user_registration(request):
 @login_required
 def user_list(request):
 
-    users = User.objects.filter(is_active=True)
+    users = User.objects.filter(is_active=True).select_related('profile')
 
     return render(request,
                   'task/user_list.html',
@@ -242,10 +265,7 @@ def user_list(request):
 @login_required
 def user_detail(request,username):
 
-    user_detail = get_object_or_404(User,
-                                    is_active=True,
-                                    username=username)
-    
+    user_detail = User.objects.select_related('profile').get(username=username,is_active=True)
     return render(request,
                   'task/user_detail.html',
-                  {'user_detail':user_detail})
+                  {'user':user_detail})

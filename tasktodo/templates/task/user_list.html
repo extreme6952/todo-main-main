@@ -37,7 +37,17 @@
     {% endif %}
 
     <div class="content">
+    
+      {% if not user.get_full_name %}
+
+        <div class="header"> <center>{{user.username}} </center></div>
+
+      {% else %}
+
       <div class="header"> <center>{{user.get_full_name}} </center></div>
+
+      {% endif %}
+        
       <br>
       <center>
       <div class="meta">
