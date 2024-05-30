@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-@f5&3-6#%m&+q5+7gx47l3!e*&gmiww#_jwwlx2(*rfp%j=w!g
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,16 +38,20 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'actions.apps.ActionsConfig',
     'tasktodo.apps.TasktodoConfig',
-    'easy_thumbnails',
-    'user_visit',
+    'chat.apps.ChatConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
     'django.contrib.staticfiles',
     'rest_framework',
     'debug_toolbar',
+    'channels',
+    'easy_thumbnails',
+    'user_visit',
+    
 ]
 
 MIDDLEWARE = [
@@ -63,6 +67,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'taskmanager.urls'
+
 
 TEMPLATES = [
     {
@@ -88,7 +93,7 @@ CACHES = {
     }
 }
 
-WSGI_APPLICATION = 'taskmanager.wsgi.application'
+ASGI_APPLICATION = 'taskmanager.asgi.application'
 
 
 # Database
@@ -96,14 +101,11 @@ WSGI_APPLICATION = 'taskmanager.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'testdb',
-        'USER': 'postgres',
-        'PASSWORD':'qwerty21',
-        'PORT':5432,
-        'HOST':'localhost',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 
 # Password validation
@@ -145,7 +147,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'taskmanager/static'
+    os.path.join(BASE_DIR,'taskmanager/static')
 ]
 
 STATIC_ROOT = 'staticfiles'

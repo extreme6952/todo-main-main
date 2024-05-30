@@ -129,8 +129,8 @@ def update_task(request,slug,task_id):
     
 
     task = get_object_or_404(Task,
-                                        slug=slug,
-                                        id=task_id)
+                            slug=slug,
+                            id=task_id,)
         
     task.is_complete = not task.is_complete    
 
@@ -145,8 +145,8 @@ def update_task(request,slug,task_id):
 def delete_task(request,task_id,slug):
 
     task = get_object_or_404(Task,
-                                        slug=slug,
-                                        id=task_id)    
+                            slug=slug,
+                            id=task_id)    
         
     task.delete()
     
