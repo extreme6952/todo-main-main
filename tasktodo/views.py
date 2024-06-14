@@ -1,5 +1,7 @@
 from django.forms import BaseModelForm
+
 from django.http import HttpResponse, HttpResponseRedirect
+
 from django.shortcuts import get_object_or_404, render
 
 from .forms import *
@@ -29,6 +31,7 @@ from .signals import *
 
 
 
+
 r = redis.Redis(host=settings.REDIS_HOST,
                     port=settings.REDIS_PORT,
                     db=settings.REDIS_DB)
@@ -43,11 +46,19 @@ def task_list(request):
 
     if not task:
 
-        task = Task.objects.all()
+        task = Task.objects.count()
 
-        cache_delete_list(sender=Task,instance=task)
+        if task > 0:
 
-        cache.set('all_task',task,timeout=1800)
+            task = list(Task.objects.all())
+
+            cache_delete_list(sender=Task,instance=task)
+
+            cache.set('all_task',task,timeout=1800)
+
+        else:
+
+            task = []
 
         
 
@@ -103,31 +114,36 @@ def task_detail(request,task_id,slug):
                                  id=task_id,
                                  slug=slug)
 
-        
 
-    
     total_views = r.incr(f"{task.id} views")
 
 
     form = CommentForm()
     
     comments = task.comments.filter(active=True).select_related('user__profile')
+
+    # if request.method == 'POST':
+    #     status = request.POST['status']
+    #     task.status = status
+    #     task.save()
+    #     return redirect(reverse('index') + '?status=' + status)
     
+
+
+        
     
     return render(request,
                   'task/task_detail.html',
                   {'task_detail':task,
                    'comments':comments,
                    'form':form,
-                   'total_views':total_views, })
+                   'total_views':total_views,})
 
 
 
 
 def update_task(request,slug,task_id):
         
-    
-
     task = get_object_or_404(Task,
                             slug=slug,
                             id=task_id,)
@@ -136,9 +152,8 @@ def update_task(request,slug,task_id):
 
     task.save()
 
-    
-
     return redirect('index')
+
 
 
 

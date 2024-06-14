@@ -13,8 +13,6 @@ from django.contrib.auth.models import User
 
 from actions.models import Comment
 
-
-
 from easy_thumbnails.fields import ThumbnailerImageField
 
 from django.contrib.auth import get_user_model
@@ -24,8 +22,15 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 
 
-
 class Task(models.Model):
+
+    class StatusTask(models.TextChoices):
+
+        ACEPTED = 'Acepted','aceptd'
+
+        IN_PROGRESS = 'In progress','in progress'
+
+        COMPLETED = 'Completed','completed'
 
     title = models.CharField(max_length=250)
 
@@ -43,7 +48,9 @@ class Task(models.Model):
 
     is_complete = models.BooleanField(default=False)
 
-    publish = models.DateTimeField(default=timezone.now,null=True)
+    status = models.CharField(max_length=50,
+                              choices=StatusTask.choices,
+                              default=StatusTask.ACEPTED)
 
     created = models.DateTimeField(auto_now_add=True,null=True)
 
@@ -53,15 +60,15 @@ class Task(models.Model):
                                         related_name='user_like',
                                         blank=True)
     
-    comments = GenericRelation(Comment, related_query_name='comments')
+    price = models.DecimalField(max_digits=10, decimal_places=2,null=True)
 
 
     class Meta:
 
-        ordering = ['-publish']
+        ordering = ['-created']
 
         indexes = [
-            models.Index(fields=['-publish'])
+            models.Index(fields=['-created'])
         ]
 
     def save(self, *args, **kwargs):
@@ -136,4 +143,20 @@ class Comment(models.Model):
     def __str__(self):
 
         return f"Comment user {self.user.username} by {self.task}"    
+    
+
+
+class ProfileTechnik(models.Model):
+
+    user = models.OneToOneField(User,
+                                on_delete=models.CASCADE)
+    
+    image_t = models.ImageField(upload_to='Technik/%Y/%m/%d')
+
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+
+        return f"Profile technic {self.user.username}"
+
         

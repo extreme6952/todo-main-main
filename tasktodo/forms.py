@@ -17,7 +17,7 @@ class NewTaskForm(forms.ModelForm):
 
         model = Task
 
-        fields = ['title','text','image']
+        fields = ['title','text','price','image',]
 
 
 
@@ -64,3 +64,12 @@ class CommentForm(forms.ModelForm):
 
         fields = ['text']
 
+
+
+class StatusInTaskForm(forms.ModelForm):
+
+    class Meta:
+        
+        model = Task
+
+        fields = ['status']

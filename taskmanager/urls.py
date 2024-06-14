@@ -24,7 +24,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+
+    path('cycle/',include('cycle.urls',namespace='cycles')),
+
     path('',include('tasktodo.urls')),
 
     path('chat/',include('chat.urls',namespace='chat')),

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+
+{% block title %} Cycle tasks {% endblock title %}
+
+
+{% block content %} 
+
+{% for item in items %}
+
+    {% with task=item.task %}
+    
+    <a href="{{task.get_absolute_url}}">
+        <img src="{% if task.image %} {{task.image.url}} {% endif %}">
+        <p> {{task.title}} </p>
+    </a>
+
+        <form action="{% url "cycles:remove" task.id %}" method="post">
+            <input type="submit" value="Удалить задачу">
+            {% csrf_token %}
+        </form>
+    
+        <p> {{item.price}} </p>
+        <p> {{item.get_total_price}} </p>
+
+    {% endwith %}
+
+{% endfor %}
+
+
+{% endblock content %}

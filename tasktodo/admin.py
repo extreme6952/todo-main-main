@@ -32,3 +32,11 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['active','created']
 
     search_fields = ['text']
+
+
+
+
+@admin.register(ProfileTechnik)
+class ProfileTechnik(admin.ModelAdmin):
+
+    list_display = ['user']

@@ -36,8 +36,8 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'actions.apps.ActionsConfig',
     'tasktodo.apps.TasktodoConfig',
+    'actions.apps.ActionsConfig',
     'chat.apps.ChatConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,12 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'daphne',
     'django.contrib.staticfiles',
+    'cycle.apps.CycleConfig',
     'rest_framework',
     'debug_toolbar',
     'channels',
     'easy_thumbnails',
     'user_visit',
-    
 ]
 
 MIDDLEWARE = [
@@ -185,3 +185,6 @@ REDIS_HOST = 'localhost'
 REDIS_DB = 0
 
 INTERNAL_IPS = ["127.0.0.1"]  # <-- Updated!
+
+
+CYCLE_SESSION_ID = 'cycle'

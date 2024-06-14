@@ -12,6 +12,7 @@
     
 <div class="ui segment centered ">
     <p class="ui big header centered"> Задача: «{{ task_detail.title }}»	</p>
+    <p class="ui big header centered"> Цена «{{task_detail.price}}$» </p>
 </div>
 
 <div class="ui basic ">
@@ -113,6 +114,15 @@
 {% include 'task/includes/comment_form.html' %}
   
 {% endwith %}
+
+
+
+<form action="" method="post">
+  {{ cycles_task_form }}
+  <input type="submit" value="add task">
+  {% csrf_token %}
+</form>
+
 
 {% endblock content %}
     
